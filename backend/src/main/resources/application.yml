@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: ecommerce-system
+  
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/ecommerce
+      database: ecommerce
+  
+  security:
+    jwt:
+      secret: ${JWT_SECRET:your-secret-key-change-in-production-min-256-bits}
+      expiration: 86400000 # 24 hours in milliseconds
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+cors:
+  allowed-origins: http://localhost:3000,http://localhost:5173
+
+logging:
+  level:
+    com.tarun.ecommerce: DEBUG
+    org.springframework.security: DEBUG
+
+

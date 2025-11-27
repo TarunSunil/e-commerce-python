@@ -1,0 +1,65 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: ecommerce-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: ecommerce
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - ecommerce-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ecommerce-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/ecommerce
+      - JWT_SECRET=your-secret-key-change-in-production-min-256-bits
+    depends_on:
+      - mongodb
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ecommerce-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+
+  recommender:
+    build:
+      context: ./recommender
+      dockerfile: Dockerfile
+    container_name: ecommerce-recommender
+    ports:
+      - "8000:8000"
+    environment:
+      - BACKEND_URL=http://backend:8080/api
+    depends_on:
+      - backend
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+
+networks:
+  ecommerce-network:
+    driver: bridge
+
+
