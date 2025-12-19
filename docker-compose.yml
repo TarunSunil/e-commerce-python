@@ -1,15 +1,18 @@
 services:
-  mongodb:
-    image: mongo:7.0
-    container_name: ecommerce-mongodb
-    ports:
-      - "27017:27017"
+  postgres:
+    image: postgres:15
+    container_name: ecommerce-postgres
     environment:
-      MONGO_INITDB_DATABASE: ecommerce
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: ecom_user
+      POSTGRES_PASSWORD: ecom_pass
+    ports:
+      - "5432:5432"
     volumes:
-      - mongodb_data:/data/db
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - ecommerce-network
+    restart: unless-stopped
 
   backend:
     build:
@@ -19,10 +22,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/ecommerce
+      - DATABASE_URL=postgresql+psycopg2://ecom_user:ecom_pass@postgres:5432/ecommerce
       - JWT_SECRET=your-secret-key-change-in-production-min-256-bits
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:5173
+      - RECOMMENDER_URL=http://recommender:8000
     depends_on:
-      - mongodb
+      - postgres
     networks:
       - ecommerce-network
     restart: unless-stopped
@@ -56,7 +61,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  mongodb_data:
+  postgres_data:
 
 networks:
   ecommerce-network:

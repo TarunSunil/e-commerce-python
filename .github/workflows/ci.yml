@@ -71,15 +71,40 @@ jobs:
         working-directory: ./recommender
         run: pip install flake8 && flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || true
 
+  py-backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: backend-py/requirements.txt
+
+      - name: Install dependencies
+        working-directory: ./backend-py
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        working-directory: ./backend-py
+        env:
+          DISABLE_DB: '1'
+        run: pytest -q
+
   docker-build:
     runs-on: ubuntu-latest
-    needs: [backend-test, frontend-test, recommender-test]
+    needs: [backend-test, frontend-test, recommender-test, py-backend-test]
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v3
       
       - name: Build backend image
         run: docker build -t ecommerce-backend:latest ./backend
+
+      - name: Build Python backend image (parallel run)
+        run: docker build -t ecommerce-backend-py:latest ./backend-py
       
       - name: Build frontend image
         run: docker build -t ecommerce-frontend:latest ./frontend

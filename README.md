@@ -1,14 +1,14 @@
 # E-Commerce Management System
 
-A full-stack e-commerce platform built with Spring Boot, React TypeScript, MongoDB, and a Python recommendation microservice. Features modern UI with smooth animations, JWT authentication, product management, shopping cart, order processing, and content-based product recommendations.
+A full-stack e-commerce platform now running on FastAPI (Python), PostgreSQL, React TypeScript, and a Python recommendation microservice. Features modern UI with smooth animations, JWT authentication, product management, shopping cart, order processing, and content-based product recommendations.
 
 ## 🚀 Tech Stack
 
 ### Backend
-- **Java 17** + **Spring Boot 3.2.0**
-- **Spring Data MongoDB** for database operations
-- **Spring Security** with JWT authentication
-- **MongoDB** for NoSQL data storage
+- **Python 3.11** + **FastAPI**
+- **SQLAlchemy 2 + Alembic** for data access and migrations
+- **PostgreSQL** for relational storage
+- **python-jose + passlib[bcrypt]** for JWT authentication and password hashing
 
 ### Frontend
 - **React 18** with **TypeScript**
@@ -32,15 +32,17 @@ A full-stack e-commerce platform built with Spring Boot, React TypeScript, Mongo
 
 ```
 ecommerce-system/
-├── backend/                 # Spring Boot application
-│   ├── src/main/java/com/tarun/ecommerce/
-│   │   ├── controller/     # REST controllers
-│   │   ├── model/          # MongoDB entities
-│   │   ├── repository/     # Data access layer
-│   │   ├── service/        # Business logic
-│   │   ├── security/       # JWT & security config
-│   │   └── dto/            # Data transfer objects
-│   └── pom.xml
+├── backend/                 # FastAPI application (PostgreSQL)
+│   ├── app/
+│   │   ├── main.py         # FastAPI app wiring
+│   │   ├── models/         # SQLAlchemy models
+│   │   ├── schemas/        # Pydantic schemas
+│   │   ├── services/       # Business logic
+│   │   ├── routers/        # Route handlers
+│   │   └── security.py     # JWT helpers
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   └── alembic/            # DB migrations
 ├── frontend/                # React TypeScript app
 │   ├── src/
 │   │   ├── components/     # Reusable UI components
@@ -60,11 +62,10 @@ ecommerce-system/
 ## 🛠️ Local Setup
 
 ### Prerequisites
-- Java 17+
 - Node.js 20+
 - Python 3.11+
 - Docker & Docker Compose (recommended)
-- MongoDB (or use Docker)
+- PostgreSQL (if running services manually)
 
 ### Option 1: Docker Compose (Recommended)
 
@@ -83,15 +84,17 @@ ecommerce-system/
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:8080/api
    - Recommender: http://localhost:8000
-   - MongoDB: localhost:27017
+   - PostgreSQL: localhost:5432 (user `ecom_user` / password `ecom_pass`)
 
 ### Option 2: Manual Setup
 
-#### Backend
+#### Backend (FastAPI)
 ```bash
 cd backend
-mvn clean install
-mvn spring-boot:run
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8080
 ```
 
 #### Frontend
@@ -108,8 +111,8 @@ pip install -r requirements.txt
 uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
-#### MongoDB
-Ensure MongoDB is running on `localhost:27017` or update `application.yml` with your connection string.
+#### PostgreSQL
+Ensure PostgreSQL is running on `localhost:5432` (or adjust `DATABASE_URL`); default local DSN: `postgresql+psycopg2://ecom_user:ecom_pass@localhost:5432/ecommerce`.
 
 ## 📡 API Endpoints
 
@@ -170,7 +173,7 @@ The system uses JWT (JSON Web Tokens) for authentication:
 
 ### Admin Access
 To create an admin user, you can either:
-- Manually update the user document in MongoDB to add `"ADMIN"` to the `roles` array
+- Manually update the `users` table in PostgreSQL to add `"ADMIN"` to the `roles` array for a user
 - Or modify the registration service to assign admin role for specific emails
 
 ## 🤖 Recommendation System
