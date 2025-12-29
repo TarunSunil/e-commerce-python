@@ -46,6 +46,41 @@ A full-stack e-commerce management system built with FastAPI (Python), PostgreSQ
 - PostgreSQL 15+
 - Docker & Docker Compose (optional)
 
+## Quick Start
+
+### Automated Setup with Docker (Recommended)
+
+1. Clone the repository:
+```bash
+git clone https://github.com/TarunSunil/e-commerce-python.git
+cd e-commerce-python
+```
+
+2. Run the quick start script:
+```bash
+./start.sh
+```
+
+This will:
+- Build and start all services using Docker Compose
+- Seed the database with sample data
+- Display access URLs and default credentials
+
+The application will be available at:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- API Documentation: http://localhost:8000/docs
+
+### Automated Manual Setup
+
+If you prefer not to use Docker:
+
+```bash
+./setup.sh
+```
+
+This will guide you through setting up the backend and frontend manually.
+
 ## Installation
 
 ### Option 1: Using Docker (Recommended)
@@ -61,7 +96,12 @@ cd e-commerce-python
 docker-compose up -d
 ```
 
-3. The application will be available at:
+3. Seed the database:
+```bash
+docker-compose exec backend python seed.py
+```
+
+4. The application will be available at:
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:8000
    - API Documentation: http://localhost:8000/docs
