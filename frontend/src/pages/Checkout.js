@@ -16,6 +16,7 @@ const Checkout = () => {
 
     try {
       await ordersAPI.create({ shipping_address: shippingAddress });
+      await clearCart();
       alert('Order placed successfully!');
       navigate('/orders');
     } catch (error) {

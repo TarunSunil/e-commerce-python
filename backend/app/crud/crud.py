@@ -51,7 +51,7 @@ def get_category(db: Session, category_id: int) -> Optional[Category]:
 
 
 def create_category(db: Session, category: schemas.CategoryCreate) -> Category:
-    db_category = Category(**category.dict())
+    db_category = Category(**category.model_dump())
     db.add(db_category)
     db.commit()
     db.refresh(db_category)
@@ -62,7 +62,7 @@ def update_category(db: Session, category_id: int, category: schemas.CategoryUpd
     db_category = get_category(db, category_id)
     if not db_category:
         return None
-    update_data = category.dict(exclude_unset=True)
+    update_data = category.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(db_category, field, value)
     db.commit()
@@ -81,7 +81,7 @@ def delete_category(db: Session, category_id: int) -> bool:
 
 # Product CRUD
 def get_products(db: Session, skip: int = 0, limit: int = 100, category_id: Optional[int] = None) -> List[Product]:
-    query = db.query(Product).filter(Product.is_active == True)
+    query = db.query(Product).filter(Product.is_active)
     if category_id:
         query = query.filter(Product.category_id == category_id)
     return query.offset(skip).limit(limit).all()
@@ -92,7 +92,7 @@ def get_product(db: Session, product_id: int) -> Optional[Product]:
 
 
 def create_product(db: Session, product: schemas.ProductCreate) -> Product:
-    db_product = Product(**product.dict())
+    db_product = Product(**product.model_dump())
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
@@ -103,7 +103,7 @@ def update_product(db: Session, product_id: int, product: schemas.ProductUpdate)
     db_product = get_product(db, product_id)
     if not db_product:
         return None
-    update_data = product.dict(exclude_unset=True)
+    update_data = product.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(db_product, field, value)
     db.commit()
@@ -138,7 +138,7 @@ def add_to_cart(db: Session, user_id: int, cart_item: schemas.CartItemCreate) ->
         db.refresh(existing_item)
         return existing_item
     
-    db_cart_item = CartItem(user_id=user_id, **cart_item.dict())
+    db_cart_item = CartItem(user_id=user_id, **cart_item.model_dump())
     db.add(db_cart_item)
     db.commit()
     db.refresh(db_cart_item)
