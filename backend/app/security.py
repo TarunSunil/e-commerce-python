@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List
 
 from fastapi import HTTPException, status
@@ -7,10 +7,20 @@ from passlib.context import CryptContext
 
 from .config import Settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Configure bcrypt with explicit rounds to avoid initialization issues
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto",
+    bcrypt__default_rounds=12,
+    bcrypt__min_rounds=10,
+    bcrypt__max_rounds=16
+)
 
 
 def hash_password(password: str) -> str:
+    # Truncate password to 72 bytes if needed (bcrypt limitation)
+    if len(password.encode('utf-8')) > 72:
+        password = password[:72]
     return pwd_context.hash(password)
 
 
@@ -19,7 +29,7 @@ def verify_password(password: str, hashed: str) -> bool:
 
 
 def create_access_token(*, email: str, user_id: str, roles: List[str], settings: Settings) -> str:
-    expire = datetime.utcnow() + timedelta(minutes=settings.jwt_exp_minutes)
+    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.jwt_exp_minutes)
     to_encode: Dict[str, Any] = {
         "sub": email,
         "userId": user_id,

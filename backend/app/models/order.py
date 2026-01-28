@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 from uuid import uuid4
 
@@ -17,7 +17,7 @@ class Order(Base):
     user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     status = Column(String, nullable=False, default="placed")
     total = Column(Numeric(12, 2), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
     items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
 

@@ -19,7 +19,7 @@ export const HomePage = () => {
   const loadProducts = async () => {
     try {
       setLoading(true);
-      const data = await productService.getAllProducts(0, 20, category || undefined, search || undefined);
+      const data = await productService.getAllProducts(0, 100, category || undefined, search || undefined);
       setProducts(data);
     } catch (error) {
       console.error('Failed to load products:', error);
@@ -59,10 +59,20 @@ export const HomePage = () => {
               className="input-field md:w-48"
             >
               <option value="">All Categories</option>
-              <option value="electronics">Electronics</option>
-              <option value="clothing">Clothing</option>
-              <option value="books">Books</option>
-              <option value="home">Home</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Home">Home & Kitchen</option>
+              <option value="Sports">Sports & Fitness</option>
+              <option value="Beauty">Beauty & Personal Care</option>
+              <option value="Computers">Computers</option>
+              <option value="Smartphones">Smartphones</option>
+              <option value="Audio">Audio</option>
+              <option value="Smart Home">Smart Home</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Appliances">Appliances</option>
+              <option value="Books">Books</option>
+              <option value="Cameras">Cameras</option>
+              <option value="Outdoor">Outdoor</option>
             </select>
             <button
               onClick={handleSearch}

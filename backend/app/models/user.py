@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 from uuid import uuid4
 
@@ -19,5 +19,5 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     roles = Column(ARRAY(String), nullable=False, default=list)
     preferences = Column(ARRAY(String), nullable=False, default=list)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 

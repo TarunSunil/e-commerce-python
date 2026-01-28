@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -11,7 +11,7 @@ class ProductBase(BaseModel):
     price: Decimal
     images: List[str] = Field(default_factory=list)
     stock: int
-    attributes: Dict[str, str] = Field(default_factory=dict)
+    attributes: Dict[str, Any] = Field(default_factory=dict)
 
 
 class ProductCreate(ProductBase):

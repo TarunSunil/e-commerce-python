@@ -13,7 +13,7 @@ router = APIRouter(prefix="/products", tags=["products"])
 @router.get("", response_model=list[ProductRead])
 def list_products(
     page: int = 0,
-    size: int = 20,
+    size: int = 100,
     category: str | None = None,
     q: str | None = None,
     db: Session = Depends(get_db),
