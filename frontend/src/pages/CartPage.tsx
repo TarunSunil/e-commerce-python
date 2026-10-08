@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { CartItem as CartItemType, Product } from '../types';
+import { CartItem as CartItemType } from '../types';
 import { cartService } from '../services/cartService';
-import { productService } from '../services/productService';
 import { CartItem } from '../components/CartItem';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Button } from '../components/Button';
@@ -12,7 +11,6 @@ import { authService } from '../services/authService';
 export const CartPage = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItemType[]>([]);
-  const [products, setProducts] = useState<Record<string, Product>>({});
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
 
@@ -29,18 +27,6 @@ export const CartPage = () => {
       setLoading(true);
       const items = await cartService.getCart();
       setCartItems(items);
-
-      // Load product details
-      const productMap: Record<string, Product> = {};
-      for (const item of items) {
-        try {
-          const product = await productService.getProductById(item.productId);
-          productMap[item.productId] = product;
-        } catch (error) {
-          console.error(`Failed to load product ${item.productId}:`, error);
-        }
-      }
-      setProducts(productMap);
 
       // Calculate total
       const cartTotal = await cartService.getCartTotal();
@@ -86,8 +72,8 @@ export const CartPage = () => {
                 <CartItem
                   key={item.id}
                   item={item}
-                  productName={products[item.productId]?.name}
-                  productImage={products[item.productId]?.images?.[0]}
+                  productName={item.productName}
+                  productImage={item.productImage}
                   onUpdate={loadCart}
                 />
               ))}
@@ -114,5 +100,4 @@ export const CartPage = () => {
     </motion.div>
   );
 };
-
 

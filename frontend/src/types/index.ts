@@ -23,6 +23,9 @@ export interface CartItem {
   productId: string;
   quantity: number;
   price: number;
+  productName: string;
+  productImage?: string;
+  stock: number;
 }
 
 export interface Order {
@@ -32,12 +35,22 @@ export interface Order {
   status: string;
   total: number;
   createdAt: string;
+  shippingAddress: ShippingAddress;
 }
 
 export interface OrderItem {
   productId: string;
   qty: number;
   price: number;
+  productName: string;
+  unitPrice: number;
+}
+
+export interface ShippingAddress {
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
 }
 
 export interface AuthResponse {
@@ -58,5 +71,4 @@ export interface RegisterRequest {
   email: string;
   password: string;
 }
-
 

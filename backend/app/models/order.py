@@ -5,6 +5,7 @@ from decimal import Decimal
 from uuid import uuid4
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, Numeric, String
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from ..database import Base
@@ -17,6 +18,7 @@ class Order(Base):
     user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     status = Column(String, nullable=False, default="placed")
     total = Column(Numeric(12, 2), nullable=False)
+    shipping_address = Column(JSONB, nullable=False, default=dict)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
     items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
@@ -30,6 +32,7 @@ class OrderItem(Base):
     product_id = Column(String, ForeignKey("products.id", ondelete="SET NULL"), nullable=True)
     qty = Column(Integer, nullable=False)
     price = Column(Numeric(12, 2), nullable=False)
+    product_name = Column(String, nullable=False)
+    unit_price = Column(Numeric(12, 2), nullable=False)
 
     order = relationship("Order", back_populates="items")
-

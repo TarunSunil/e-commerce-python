@@ -90,7 +90,7 @@ export const OrderHistoryPage = () => {
                   <ul className="space-y-1">
                     {order.items.map((item, idx) => (
                       <li key={idx} className="text-sm">
-                        {item.qty}x Product - ${item.price.toFixed(2)} each
+                        {item.qty}x {item.productName} - ${item.unitPrice.toFixed(2)} each
                       </li>
                     ))}
                   </ul>
@@ -103,5 +103,4 @@ export const OrderHistoryPage = () => {
     </motion.div>
   );
 };
-
 

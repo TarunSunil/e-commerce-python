@@ -1,7 +1,7 @@
 from .auth import AuthResponse, LoginRequest, RegisterRequest
 from .product import ProductCreate, ProductRead, ProductUpdate
 from .cart import CartItemCreate, CartItemRead
-from .order import OrderItemRead, OrderRead
+from .order import OrderCreate, OrderItemRead, OrderRead
 from .user import UserRead
 
 __all__ = [
@@ -15,5 +15,6 @@ __all__ = [
     "CartItemRead",
     "OrderItemRead",
     "OrderRead",
+    "OrderCreate",
     "UserRead",
 ]

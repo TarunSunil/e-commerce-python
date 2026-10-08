@@ -1,6 +1,8 @@
 # E-Commerce Application
 
-A full-stack e-commerce platform with React frontend, FastAPI backend, and AI-powered product recommendations.
+A demonstration e-commerce platform with a React frontend, FastAPI backend, PostgreSQL database, and an optional content-based recommender.
+
+The current build is not enabled for real orders. Inventory is seeded demonstration data, card details are not collected, and seller, tax, shipping, returns, and payment settings remain placeholders until professionally confirmed.
 
 ## 🏗️ Architecture
 
@@ -97,13 +99,14 @@ Before starting, ensure you have these installed on your computer:
    - Copy this content (adjust if you used different database credentials):
    ```
    DATABASE_URL=postgresql+psycopg2://ecom_user:ecom_pass@localhost:5432/ecommerce
-   JWT_SECRET=your-super-secret-jwt-key-min-32-characters-long-please
+   JWT_SECRET=<generate a secret of at least 32 characters>
    CORS_ORIGINS=["http://localhost:5173","http://localhost:3000"]
    RECOMMENDER_URL=http://localhost:8000
    ```
 
-6. **Start the Backend API:**
+6. **Run database migrations and start the Backend API:**
    ```powershell
+   python -m alembic upgrade head
    uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
    ```
 
@@ -216,6 +219,7 @@ Once you've completed the setup above, to run the application again:
    ```powershell
    cd D:\code\E-commerce\backend
    .\venv\Scripts\Activate.ps1
+   python -m alembic upgrade head
    uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
    ```
 
@@ -231,6 +235,11 @@ Once you've completed the setup above, to run the application again:
    cd D:\code\E-commerce\frontend
    npm run dev
    ```
+
+If a database was created by an older version using
+`Base.metadata.create_all`, back it up first and run
+`python -m alembic stamp head` once. New databases must use
+`python -m alembic upgrade head`.
 
 ## 🐳 Alternative: Docker Setup (Advanced)
 

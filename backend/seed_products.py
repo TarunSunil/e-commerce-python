@@ -14,9 +14,6 @@ from app.models.product import Product
 from decimal import Decimal
 import random
 
-# Create tables if they don't exist
-Base.metadata.create_all(bind=engine)
-
 def create_products(db: Session):
     """Create 100 diverse products across multiple categories"""
     
@@ -25,7 +22,7 @@ def create_products(db: Session):
         {
             "name": "MacBook Pro 16-inch M3 Max",
             "description": "Ultimate pro laptop with M3 Max chip, 36GB RAM, 1TB SSD. Perfect for developers and creators.",
-            "categories": ["Electronics", "Computers", "Laptops"],
+            "categories": ["electronics", "computers", "laptops"],
             "price": Decimal("2499.99"),
             "images": ["https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800"],
             "stock": 25,
@@ -961,6 +958,7 @@ def create_products(db: Session):
     # Create products
     created_count = 0
     for product_data in products_data:
+        product_data["categories"] = [category.lower() for category in product_data["categories"]]
         product = Product(**product_data)
         db.add(product)
         created_count += 1

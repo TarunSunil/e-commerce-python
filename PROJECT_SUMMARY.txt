@@ -53,14 +53,14 @@ BACKEND (backend/)
 - Server: Uvicorn (ASGI server)
 - Database: PostgreSQL with SQLAlchemy 2.0 ORM
 - Migrations: Alembic
-- Authentication: JWT (python-jose) + Bcrypt (passlib)
+- Authentication: JWT (python-jose) + Bcrypt (passlib), with 8-character minimum registration passwords and rate-limited auth routes
 - Schema Validation: Pydantic v2
 
 RECOMMENDER SERVICE (recommender/)
 ----------------------------------
 - Framework: FastAPI 0.115.0+
 - ML Library: scikit-learn (for similarity calculations)
-- Algorithm: Content-based filtering using Jaccard similarity
+- Algorithm: Optional content-based filtering using category similarity
 - HTTP Client: Requests library
 
 DATABASE
@@ -130,8 +130,8 @@ Database ORM models with SQLAlchemy:
 - product.py - Product table (id, name, description, categories, price, 
                images, stock, attributes)
 - cart.py - CartItem table (user_id, product_id, quantity, price)
-- order.py - Order & OrderItem tables (order status, total, items with 
-             foreign keys)
+- order.py - Order & OrderItem tables (order status, total, shipping-address snapshot,
+             product-name and unit-price snapshots)
 
 ROUTERS (routers/)
 ------------------
@@ -158,10 +158,10 @@ Business logic layer:
 SCHEMAS (schemas/)
 ------------------
 Pydantic models for request/response validation:
-- auth.py - LoginRequest, RegisterRequest, AuthResponse
+- auth.py - LoginRequest, RegisterRequest (8-character minimum), AuthResponse
 - product.py - ProductCreate, ProductUpdate, ProductRead
 - cart.py - CartItemCreate, CartItemRead
-- order.py - OrderRead, OrderItemRead
+- order.py - OrderCreate, ShippingAddress, OrderRead, OrderItemRead
 - user.py - UserRead
 
 ================================================================================

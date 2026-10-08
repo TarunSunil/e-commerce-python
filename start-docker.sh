@@ -42,6 +42,14 @@ if [ $? -eq 0 ]; then
     echo ""
     echo "Waiting for services to be ready..."
     sleep 5
+
+    echo ""
+    echo "Applying database migrations..."
+    docker exec ecommerce-backend alembic upgrade head
+    if [ $? -ne 0 ]; then
+        echo "✗ Database migrations failed"
+        exit 1
+    fi
     
     # Add products
     echo ""

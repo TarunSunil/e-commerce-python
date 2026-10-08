@@ -14,6 +14,9 @@ class CartItemRead(BaseModel):
     productId: str = Field(alias="product_id")
     quantity: int
     price: Decimal
+    productName: str = Field(alias="product_name")
+    productImage: str | None = Field(default=None, alias="product_image")
+    stock: int
 
     class Config:
         from_attributes = True

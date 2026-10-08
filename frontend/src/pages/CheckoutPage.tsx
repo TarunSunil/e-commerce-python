@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 import { orderService } from '../services/orderService';
 import { cartService } from '../services/cartService';
 import { Button } from '../components/Button';
@@ -10,15 +11,12 @@ import { authService } from '../services/authService';
 export const CheckoutPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [priceNotice, setPriceNotice] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     address: '',
     city: '',
     state: '',
     zipCode: '',
-    cardNumber: '',
-    cardName: '',
-    expiryDate: '',
-    cvv: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,12 +29,24 @@ export const CheckoutPage = () => {
 
     try {
       setLoading(true);
-      const order = await orderService.createOrder();
+      setPriceNotice(null);
+      const order = await orderService.createOrder({
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        zipCode: formData.zipCode,
+      });
       await cartService.clearCart();
       navigate(`/orders/${order.id}`);
     } catch (error) {
       console.error('Failed to create order:', error);
-      alert('Failed to place order. Please try again.');
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        const changedLines = error.response.data?.detail?.changedLines ?? [];
+        const names = changedLines.map((line: { name: string }) => line.name).join(', ');
+        setPriceNotice(`The price changed for ${names || 'one or more items'}. Review your cart before trying again.`);
+      } else {
+        setPriceNotice('Failed to place the order. Please check your address and try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -85,40 +95,14 @@ export const CheckoutPage = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Payment Information</h2>
-            <div className="space-y-4">
-              <Input
-                label="Card Number"
-                value={formData.cardNumber}
-                onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value })}
-                placeholder="1234 5678 9012 3456"
-                required
-              />
-              <Input
-                label="Cardholder Name"
-                value={formData.cardName}
-                onChange={(e) => setFormData({ ...formData, cardName: e.target.value })}
-                required
-              />
-              <div className="grid grid-cols-2 gap-4">
-                <Input
-                  label="Expiry Date"
-                  value={formData.expiryDate}
-                  onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
-                  placeholder="MM/YY"
-                  required
-                />
-                <Input
-                  label="CVV"
-                  value={formData.cvv}
-                  onChange={(e) => setFormData({ ...formData, cvv: e.target.value })}
-                  type="password"
-                  required
-                />
-              </div>
-            </div>
-          </div>
+          <p className="rounded-lg bg-amber-50 p-4 text-amber-900">
+            This demonstration store does not collect card details. Payment methods will be configured before live orders are enabled.
+          </p>
+          {priceNotice && (
+            <p role="alert" className="rounded-lg bg-red-50 p-4 text-red-800">
+              {priceNotice}
+            </p>
+          )}
 
           <Button type="submit" disabled={loading} className="w-full">
             {loading ? 'Processing...' : 'Place Order'}
@@ -128,5 +112,3 @@ export const CheckoutPage = () => {
     </motion.div>
   );
 };
-
-

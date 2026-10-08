@@ -1,14 +1,14 @@
 import api from './api';
-import { Order } from '../types';
+import { Order, ShippingAddress } from '../types';
 
 export const orderService = {
-  async createOrder(): Promise<Order> {
-    const response = await api.post<Order>('/orders', {});
+  async createOrder(shippingAddress: ShippingAddress): Promise<Order> {
+    const response = await api.post<Order>('/orders', { shippingAddress });
     return response.data;
   },
 
   async getUserOrders(userId: string): Promise<Order[]> {
-    const response = await api.get<Order[]>(`/orders/${userId}`);
+    const response = await api.get<Order[]>(`/orders/user/${userId}`);
     return response.data;
   },
 
@@ -17,5 +17,4 @@ export const orderService = {
     return response.data;
   },
 };
-
 

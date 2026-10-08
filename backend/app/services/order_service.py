@@ -4,14 +4,13 @@ from typing import List
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 
-from ..models import CartItem, Order, OrderItem, Product, User
+from ..models import CartItem, Order, OrderItem, Product
+from ..schemas.order import ShippingAddress
 
 
-def create_order(db: Session, user_id: str) -> Order:
-    # Use joinedload to avoid N+1 query problem
+def create_order(db: Session, user_id: str, shipping_address: ShippingAddress) -> Order:
     cart_items: List[CartItem] = (
         db.query(CartItem)
-        .options(joinedload(CartItem.product))
         .filter(CartItem.user_id == user_id)
         .all()
     )
@@ -22,36 +21,61 @@ def create_order(db: Session, user_id: str) -> Order:
     total = Decimal("0")
     
     try:
-        # Start transaction (implicit with Session, but made explicit for clarity)
+        product_ids = sorted({item.product_id for item in cart_items})
+        locked_products = (
+            db.query(Product)
+            .filter(Product.id.in_(product_ids))
+            .order_by(Product.id)
+            .with_for_update()
+            .all()
+        )
+        products = {product.id: product for product in locked_products}
+        changed_lines = []
         for item in cart_items:
-            # Access product through relationship (already loaded via joinedload)
-            product = item.product if hasattr(item, 'product') else db.get(Product, item.product_id)
+            product = products.get(item.product_id)
             if not product:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Product not found: {item.product_id}")
+            if item.price != product.price:
+                changed_lines.append({
+                    "productId": product.id,
+                    "name": product.name,
+                    "oldPrice": float(item.price),
+                    "newPrice": float(product.price),
+                })
+        if changed_lines:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail={"message": "Prices changed", "changedLines": changed_lines},
+            )
+
+        for item in cart_items:
+            product = products[item.product_id]
             if product.stock < item.quantity:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Insufficient stock for product: {product.name}")
 
             product.stock -= item.quantity
             db.add(product)
 
-            order_item = OrderItem(product_id=item.product_id, qty=item.quantity, price=item.price)
+            order_item = OrderItem(
+                product_id=item.product_id,
+                qty=item.quantity,
+                price=item.price,
+                product_name=product.name,
+                unit_price=product.price,
+            )
             order_items.append(order_item)
             total += item.price * item.quantity
 
-        order = Order(user_id=user_id, items=order_items, total=total)
+        order = Order(
+            user_id=user_id,
+            items=order_items,
+            total=total,
+            shipping_address=shipping_address.model_dump(by_alias=True),
+        )
         db.add(order)
 
         # Clear cart after order creation
         db.query(CartItem).filter(CartItem.user_id == user_id).delete()
-
-        # Append to user's order ids if needed
-        user = db.get(User, user_id)
-        if user and hasattr(user, "order_ids"):
-            # Attribute kept for parity; may not exist
-            existing = getattr(user, "order_ids") or []
-            existing.append(order.id)
-            setattr(user, "order_ids", existing)
-            db.add(user)
 
         db.commit()
         db.refresh(order)

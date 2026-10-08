@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..dependencies import CurrentUser, get_current_user
-from ..schemas import OrderRead
+from ..schemas import OrderCreate, OrderRead
 from ..services import create_order, get_order, get_user_orders
 
 router = APIRouter(prefix="/orders", tags=["orders"])
@@ -11,13 +11,13 @@ router = APIRouter(prefix="/orders", tags=["orders"])
 
 @router.post("", response_model=OrderRead)
 def create_order_route(
+    payload: OrderCreate,
     db: Session = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_user),
 ):
-    return create_order(db, current_user.id)
+    return create_order(db, current_user.id, payload.shippingAddress)
 
-
-@router.get("/{user_id}", response_model=list[OrderRead])
+@router.get("/user/{user_id}", response_model=list[OrderRead])
 def list_user_orders(
     user_id: str,
     db: Session = Depends(get_db),
@@ -28,7 +28,7 @@ def list_user_orders(
     return get_user_orders(db, user_id)
 
 
-@router.get("/order/{order_id}", response_model=OrderRead)
+@router.get("/{order_id}", response_model=OrderRead)
 def get_order_route(
     order_id: str,
     db: Session = Depends(get_db),

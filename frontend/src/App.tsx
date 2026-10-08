@@ -9,6 +9,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { AdminPage } from './pages/AdminPage';
 import { OrderHistoryPage } from './pages/OrderHistoryPage';
+import { OrderDetailPage } from './pages/OrderDetailPage';
 import { authService } from './services/authService';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -39,6 +40,7 @@ const AnimatedRoutes = () => {
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
         <Route path="/orders" element={<ProtectedRoute><OrderHistoryPage /></ProtectedRoute>} />
+        <Route path="/orders/:id" element={<ProtectedRoute><OrderDetailPage /></ProtectedRoute>} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
@@ -59,5 +61,4 @@ function App() {
 }
 
 export default App;
-
 
