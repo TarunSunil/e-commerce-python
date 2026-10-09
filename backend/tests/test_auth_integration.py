@@ -19,6 +19,8 @@ def test_register_and_login_against_postgres():
             json={"name": "Integration User", "email": email, "password": "correct horse"},
         )
         assert register_response.status_code == 200
+        assert set(register_response.json()) == {"token", "userId", "email", "name", "roles"}
+        assert register_response.json()["userId"]
         assert register_response.json()["email"] == email
 
         login_response = client.post(
@@ -26,6 +28,8 @@ def test_register_and_login_against_postgres():
             json={"email": email, "password": "correct horse"},
         )
         assert login_response.status_code == 200
+        assert set(login_response.json()) == {"token", "userId", "email", "name", "roles"}
+        assert login_response.json()["userId"] == register_response.json()["userId"]
         assert login_response.json()["email"] == email
         assert login_response.json()["token"]
     except OperationalError as exc:
