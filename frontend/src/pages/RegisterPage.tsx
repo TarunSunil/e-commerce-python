@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 import { authService } from '../services/authService';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
@@ -11,6 +12,14 @@ export const RegisterPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const getErrorMessage = (error: unknown) => {
+    if (!axios.isAxiosError(error)) return 'Registration failed';
+    const detail = error.response?.data?.detail;
+    if (Array.isArray(detail)) return detail.map((item) => item.msg).join(', ');
+    if (typeof detail === 'string') return detail;
+    return 'Registration failed';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -19,8 +28,8 @@ export const RegisterPage = () => {
     try {
       await authService.register(formData);
       navigate('/');
-    } catch (error: any) {
-      setError(error.response?.data?.message || 'Registration failed');
+    } catch (error: unknown) {
+      setError(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -66,7 +75,7 @@ export const RegisterPage = () => {
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               required
-              minLength={6}
+              minLength={8}
             />
           </div>
           <Button type="submit" disabled={loading} className="w-full">
@@ -83,5 +92,4 @@ export const RegisterPage = () => {
     </motion.div>
   );
 };
-
 

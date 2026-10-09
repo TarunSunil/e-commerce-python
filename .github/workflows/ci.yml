@@ -9,6 +9,23 @@ on:
 jobs:
   backend-test:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql+psycopg2://ecom_user:ecom_password@localhost:5432/ecommerce
+      JWT_SECRET: ci-only-secret-that-is-at-least-32-characters
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ecom_user
+          POSTGRES_PASSWORD: ecom_password
+          POSTGRES_DB: ecommerce
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U ecom_user -d ecommerce"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
     steps:
       - uses: actions/checkout@v3
       
@@ -22,6 +39,12 @@ jobs:
       - name: Install dependencies
         working-directory: ./backend
         run: pip install -r requirements.txt
+
+      - name: Validate Alembic schema parity
+        working-directory: ./backend
+        run: |
+          python -m alembic upgrade head
+          python -m alembic check
 
       - name: Run tests
         working-directory: ./backend

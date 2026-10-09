@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 import { authService } from '../services/authService';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
@@ -11,6 +12,14 @@ export const LoginPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const getErrorMessage = (error: unknown) => {
+    if (!axios.isAxiosError(error)) return 'Invalid email or password';
+    const detail = error.response?.data?.detail;
+    if (Array.isArray(detail)) return detail.map((item) => item.msg).join(', ');
+    if (typeof detail === 'string') return detail;
+    return 'Invalid email or password';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -19,8 +28,8 @@ export const LoginPage = () => {
     try {
       await authService.login(formData);
       navigate('/');
-    } catch (error: any) {
-      setError(error.response?.data?.message || 'Invalid email or password');
+    } catch (error: unknown) {
+      setError(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -75,5 +84,4 @@ export const LoginPage = () => {
     </motion.div>
   );
 };
-
 

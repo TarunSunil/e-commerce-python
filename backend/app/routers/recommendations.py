@@ -18,7 +18,7 @@ def _recommender_base() -> str:
 async def _proxy_recommender(path: str, limit: int):
     base = _recommender_base()
     url = f"{base}{path}"
-    timeout = httpx.Timeout(connect=0.5, read=2.0)
+    timeout = httpx.Timeout(2.0, connect=0.5)
     try:
         async with httpx.AsyncClient(timeout=timeout) as client:
             resp = await client.get(url, params={"limit": str(limit)})
