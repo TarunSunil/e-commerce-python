@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/Navbar';
@@ -50,10 +51,22 @@ const AnimatedRoutes = () => {
 };
 
 function App() {
+  const [theme, setTheme] = React.useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('meridian-theme');
+    return saved === 'dark' || saved === 'light'
+      ? saved
+      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  });
+
+  React.useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('meridian-theme', theme);
+  }, [theme]);
+
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
+      <div className="min-h-screen bg-meridian-bg text-meridian-ink">
+        <Navbar theme={theme} onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />
         <AnimatedRoutes />
       </div>
     </Router>
@@ -61,4 +74,3 @@ function App() {
 }
 
 export default App;
-

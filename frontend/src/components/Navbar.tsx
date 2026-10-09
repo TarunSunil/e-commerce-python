@@ -1,8 +1,12 @@
-import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
 
-export const Navbar = () => {
+interface NavbarProps {
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
+}
+
+export const Navbar = ({ theme, onToggleTheme }: NavbarProps) => {
   const navigate = useNavigate();
   const user = authService.getCurrentUser();
   const isAuthenticated = authService.isAuthenticated();
@@ -14,85 +18,36 @@ export const Navbar = () => {
   };
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className="bg-white shadow-md sticky top-0 z-50"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center">
-            <motion.span
-              className="text-2xl font-bold text-primary-600"
-              whileHover={{ scale: 1.05 }}
-            >
-              E-Commerce
-            </motion.span>
+    <nav className="sticky top-0 z-50 border-b border-meridian-ink/10 bg-meridian-bg/90 backdrop-blur">
+      <div className="container-meridian flex h-[76px] items-center justify-between gap-5">
+          <Link to="/" className="flex items-center gap-2" aria-label="Meridian home">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-meridian-deep text-lg font-bold text-meridian-highlight">M</span>
+            <span className="font-display text-2xl font-bold tracking-tight">meridian<span className="text-meridian-brand">.</span></span>
           </Link>
 
-          <div className="flex items-center space-x-4">
-            <Link
-              to="/"
-              className="text-gray-700 hover:text-primary-600 transition-colors"
-            >
-              Products
-            </Link>
+          <div className="hidden items-center gap-6 md:flex">
+            <Link to="/" className="text-sm font-semibold text-meridian-muted hover:text-meridian-brand">Shop</Link>
+            <Link to="/orders" className="text-sm font-semibold text-meridian-muted hover:text-meridian-brand">Orders</Link>
+            {isAdmin && <Link to="/admin" className="text-sm font-semibold text-meridian-muted hover:text-meridian-brand">Admin</Link>}
+          </div>
 
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={onToggleTheme} className="grid h-11 w-11 place-items-center rounded-full border border-meridian-ink/15 text-lg" aria-label={`Use ${theme === 'dark' ? 'light' : 'dark'} theme`}>
+              {theme === 'dark' ? 'Light' : 'Dark'}
+            </button>
             {isAuthenticated ? (
               <>
-                <Link
-                  to="/cart"
-                  className="text-gray-700 hover:text-primary-600 transition-colors"
-                >
-                  Cart
-                </Link>
-                <Link
-                  to="/orders"
-                  className="text-gray-700 hover:text-primary-600 transition-colors"
-                >
-                  Orders
-                </Link>
-                {isAdmin && (
-                  <Link
-                    to="/admin"
-                    className="text-gray-700 hover:text-primary-600 transition-colors"
-                  >
-                    Admin
-                  </Link>
-                )}
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-600">{user?.name}</span>
-                  <motion.button
-                    onClick={handleLogout}
-                    className="text-gray-700 hover:text-primary-600 transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Logout
-                  </motion.button>
-                </div>
+                <Link to="/cart" className="btn-primary !min-h-11 !px-5">Cart</Link>
+                <button type="button" onClick={handleLogout} className="hidden text-sm font-semibold text-meridian-muted hover:text-meridian-brand sm:block">{user?.name ? `Hi, ${user.name}` : 'Log out'}</button>
               </>
             ) : (
               <>
-                <Link
-                  to="/login"
-                  className="text-gray-700 hover:text-primary-600 transition-colors"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="btn-primary"
-                >
-                  Sign Up
-                </Link>
+                <Link to="/login" className="hidden text-sm font-semibold sm:block">Sign in</Link>
+                <Link to="/register" className="btn-primary !min-h-11 !px-5">Join</Link>
               </>
             )}
           </div>
-        </div>
       </div>
-    </motion.nav>
+    </nav>
   );
 };
-
-

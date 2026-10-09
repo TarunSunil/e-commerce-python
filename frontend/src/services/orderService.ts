@@ -13,7 +13,7 @@ export const orderService = {
   },
 
   async getOrderById(orderId: string): Promise<Order> {
-    const response = await api.get<Order>(`/orders/order/${orderId}`);
+    const response = await api.get<Order>(`/orders/${orderId}`);
     return response.data;
   },
 };

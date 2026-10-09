@@ -1,0 +1,36 @@
+:root {
+  --bg: #F6F3EC;
+  --sf: #FFFFFF;
+  --ink: #10201C;
+  --mu: #55645F;
+  --br: #0A5C4F;
+  --bx: #073F36;
+  --hi: #C8F169;
+  --sa: #C8321A;
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --bg: #0A1412;
+  --sf: #12211D;
+  --ink: #EAF2EE;
+  --mu: #9BB0A8;
+  --br: #5ED9B8;
+  --bx: #0F2E28;
+  --sa: #FF8466;
+  color-scheme: dark;
+}
+
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 200 800;
+  src: url('@fontsource/bricolage-grotesque/files/bricolage-grotesque-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  src: url('@fontsource/instrument-sans/files/instrument-sans-latin-400-normal.woff2') format('woff2');
+}

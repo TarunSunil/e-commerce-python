@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
@@ -11,6 +11,7 @@ import { authService } from '../services/authService';
 export const CheckoutPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [checkingCart, setCheckingCart] = useState(true);
   const [priceNotice, setPriceNotice] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     address: '',
@@ -18,6 +19,26 @@ export const CheckoutPage = () => {
     state: '',
     zipCode: '',
   });
+
+  useEffect(() => {
+    let active = true;
+    cartService.getCart()
+      .then((items) => {
+        if (active && items.length === 0) {
+          navigate('/cart', { replace: true });
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to verify cart before checkout:', error);
+      })
+      .finally(() => {
+        if (active) setCheckingCart(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,12 +66,24 @@ export const CheckoutPage = () => {
         const names = changedLines.map((line: { name: string }) => line.name).join(', ');
         setPriceNotice(`The price changed for ${names || 'one or more items'}. Review your cart before trying again.`);
       } else {
-        setPriceNotice('Failed to place the order. Please check your address and try again.');
+        const detail = axios.isAxiosError(error) ? error.response?.data?.detail : null;
+        const serverMessage = Array.isArray(detail)
+          ? detail.map((item: { msg?: string }) => item.msg).filter(Boolean).join(', ')
+          : typeof detail === 'object' && detail !== null && typeof detail.message === 'string'
+            ? detail.message
+            : typeof detail === 'string'
+              ? detail
+              : null;
+        setPriceNotice(serverMessage || 'Failed to place the order. Please check your address and try again.');
       }
     } finally {
       setLoading(false);
     }
   };
+
+  if (checkingCart) {
+    return <div className="flex min-h-screen items-center justify-center">Checking your cart...</div>;
+  }
 
   return (
     <motion.div
@@ -59,12 +92,13 @@ export const CheckoutPage = () => {
       exit={{ opacity: 0 }}
       className="min-h-screen py-8"
     >
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+      <div className="container-meridian max-w-3xl">
+        <p className="eyebrow mb-3">Almost yours</p>
+        <h1 className="display-lg mb-10 font-bold">Checkout</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Shipping Address</h2>
+          <div className="surface p-6 sm:p-8">
+            <h2 className="mb-5 font-display text-2xl font-bold">Shipping address</h2>
             <div className="space-y-4">
               <Input
                 label="Address"
@@ -95,11 +129,11 @@ export const CheckoutPage = () => {
             </div>
           </div>
 
-          <p className="rounded-lg bg-amber-50 p-4 text-amber-900">
+          <p className="rounded-2xl border border-meridian-ink/10 bg-meridian-highlight/30 p-4 text-meridian-deep">
             This demonstration store does not collect card details. Payment methods will be configured before live orders are enabled.
           </p>
           {priceNotice && (
-            <p role="alert" className="rounded-lg bg-red-50 p-4 text-red-800">
+            <p role="alert" className="rounded-2xl border border-meridian-sale/40 bg-meridian-sale/10 p-4 text-meridian-sale">
               {priceNotice}
             </p>
           )}

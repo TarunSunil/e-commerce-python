@@ -40,17 +40,18 @@ export const RegisterPage = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
+      className="page-shell flex items-center justify-center px-5 py-16"
     >
-      <div className="max-w-md w-full space-y-8">
+      <div className="surface w-full max-w-md p-7 sm:p-10">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
+          <p className="eyebrow mb-3">Join Meridian</p>
+          <h2 className="display-lg font-bold">
+            Make it yours
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            <div className="rounded-xl border border-meridian-sale/40 bg-meridian-sale/10 px-4 py-3 text-meridian-sale">
               {error}
             </div>
           )}
@@ -81,9 +82,9 @@ export const RegisterPage = () => {
           <Button type="submit" disabled={loading} className="w-full">
             {loading ? 'Creating account...' : 'Sign up'}
           </Button>
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-sm text-meridian-muted">
             Already have an account?{' '}
-            <Link to="/login" className="text-primary-600 hover:text-primary-800">
+            <Link to="/login" className="font-bold text-meridian-brand hover:text-meridian-deep">
               Sign in
             </Link>
           </p>
@@ -92,4 +93,3 @@ export const RegisterPage = () => {
     </motion.div>
   );
 };
-
