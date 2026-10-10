@@ -10,6 +10,7 @@ export const OrderHistoryPage = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const user = authService.getCurrentUser();
 
   useEffect(() => {
@@ -24,10 +25,12 @@ export const OrderHistoryPage = () => {
     if (!user) return;
     try {
       setLoading(true);
+      setError(null);
       const data = await orderService.getUserOrders(user.userId);
       setOrders(data);
     } catch (error) {
       console.error('Failed to load orders:', error);
+      setError('We could not load your orders.');
     } finally {
       setLoading(false);
     }
@@ -41,6 +44,17 @@ export const OrderHistoryPage = () => {
     );
   }
 
+  if (error) {
+    return (
+      <main className="mx-auto max-w-2xl px-4 py-12 text-center">
+        <p role="alert" className="text-red-700">{error}</p>
+        <button type="button" onClick={loadOrders} className="mt-4 rounded-lg bg-primary-600 px-4 py-2 text-white">
+          Retry
+        </button>
+      </main>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -48,8 +62,9 @@ export const OrderHistoryPage = () => {
       exit={{ opacity: 0 }}
       className="min-h-screen py-8"
     >
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Order History</h1>
+      <div className="container-meridian">
+        <p className="eyebrow mb-3">Your account</p>
+        <h1 className="display-lg mb-10 font-bold">Orders</h1>
 
         {orders.length === 0 ? (
           <div className="text-center py-12">
@@ -63,34 +78,34 @@ export const OrderHistoryPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white p-6 rounded-lg shadow-md"
+                className="surface p-6"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-lg font-semibold">Order #{order.id.slice(0, 8)}</h3>
-                    <p className="text-sm text-gray-600">
+                    <h3 className="font-display text-xl font-bold">Order #{order.id.slice(0, 8)}</h3>
+                    <p className="text-sm text-meridian-muted">
                       {new Date(order.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-semibold text-primary-600">
-                      ${order.total.toFixed(2)}
+                    <p className="text-lg font-semibold text-meridian-brand">
+                      ${Number.isFinite(Number(order.total)) ? Number(order.total).toFixed(2) : '—'}
                     </p>
                     <span className={`text-sm px-2 py-1 rounded ${
-                      order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                      order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
-                      'bg-yellow-100 text-yellow-800'
+                      'rounded-full bg-meridian-highlight/40 text-meridian-deep'
                     }`}>
                       {order.status}
                     </span>
                   </div>
                 </div>
                 <div className="border-t pt-4">
-                  <p className="text-sm text-gray-600 mb-2">Items:</p>
+                  <p className="mb-2 text-sm text-meridian-muted">Items:</p>
                   <ul className="space-y-1">
                     {order.items.map((item, idx) => (
                       <li key={idx} className="text-sm">
-                        {item.qty}x Product - ${item.price.toFixed(2)} each
+                        {item.qty}x {item.productName || 'Product unavailable'} - ${
+                          Number.isFinite(Number(item.unitPrice)) ? Number(item.unitPrice).toFixed(2) : '—'
+                        } each
                       </li>
                     ))}
                   </ul>
@@ -103,5 +118,3 @@ export const OrderHistoryPage = () => {
     </motion.div>
   );
 };
-
-

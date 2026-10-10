@@ -1,0 +1,10 @@
+open ubuntu and type : 
+
+"cd d/code/E-commerce" -> to change directory
+"ls" -> list all files
+"docker-compose up" -> to start the server
+"docker-compose down" -> to stop server (since I have older version of docker I use this command)
+
+The backend container runs "alembic upgrade head" before Uvicorn starts.
+For a database created by the old create_all code, back it up and run
+"docker exec ecommerce-backend alembic stamp head" once before restarting.

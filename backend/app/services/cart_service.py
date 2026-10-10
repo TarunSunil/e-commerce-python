@@ -2,7 +2,7 @@ from decimal import Decimal
 from typing import List
 
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from ..models import CartItem, Product
 
@@ -34,7 +34,12 @@ def add_to_cart(db: Session, user_id: str, product_id: str, quantity: int) -> Ca
 
 
 def get_cart(db: Session, user_id: str) -> List[CartItem]:
-    return db.query(CartItem).filter(CartItem.user_id == user_id).all()
+    return (
+        db.query(CartItem)
+        .options(joinedload(CartItem.product))
+        .filter(CartItem.user_id == user_id)
+        .all()
+    )
 
 
 def remove_from_cart(db: Session, user_id: str, product_id: str) -> None:

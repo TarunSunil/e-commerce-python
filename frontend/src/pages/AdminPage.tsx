@@ -118,8 +118,9 @@ export const AdminPage = () => {
       exit={{ opacity: 0 }}
       className="min-h-screen py-8"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Panel</h1>
+      <div className="container-meridian">
+        <p className="eyebrow mb-3">Operations</p>
+        <h1 className="display-lg mb-10 font-bold">Admin panel</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
@@ -130,11 +131,11 @@ export const AdminPage = () => {
                   key={product.id}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center"
+                  className="surface flex items-center justify-between p-4"
                 >
                   <div>
                     <h3 className="font-semibold">{product.name}</h3>
-                    <p className="text-sm text-gray-600">${product.price.toFixed(2)}</p>
+                    <p className="text-sm text-meridian-muted">${product.price.toFixed(2)}</p>
                   </div>
                   <div className="flex space-x-2">
                     <Button variant="secondary" onClick={() => handleEdit(product)}>
@@ -149,7 +150,7 @@ export const AdminPage = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="surface p-6">
             <h2 className="text-2xl font-semibold mb-4">
               {editingProduct ? 'Edit Product' : 'Add Product'}
             </h2>
@@ -212,5 +213,4 @@ export const AdminPage = () => {
     </motion.div>
   );
 };
-
 

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class UserRead(BaseModel):
@@ -10,7 +10,9 @@ class UserRead(BaseModel):
     email: EmailStr
     roles: List[str]
     preferences: List[str]
-    created_at: datetime
+    createdAt: datetime = Field(validation_alias="created_at", serialization_alias="createdAt")
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True,
+        populate_by_name=True,
+    )

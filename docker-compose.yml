@@ -7,7 +7,7 @@ services:
     container_name: ecommerce-postgres
     environment:
       POSTGRES_USER: ecom_user
-      POSTGRES_PASSWORD: ecom_pass
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
       POSTGRES_DB: ecommerce
     ports:
       - "5432:5432"
@@ -28,8 +28,8 @@ services:
       dockerfile: Dockerfile
     container_name: ecommerce-backend
     environment:
-      DATABASE_URL: postgresql+psycopg2://ecom_user:ecom_pass@postgres:5432/ecommerce
-      JWT_SECRET: your-super-secret-jwt-key-min-32-characters-long-please
+            DATABASE_URL: postgresql+psycopg2://ecom_user:ecompass7@postgres:5432/ecommerce
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
       JWT_ALGORITHM: HS256
       JWT_EXP_MINUTES: 1440
       CORS_ORIGINS: '["http://localhost:5173","http://localhost:3000"]'
@@ -42,7 +42,7 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload"
     networks:
       - ecommerce-network
 

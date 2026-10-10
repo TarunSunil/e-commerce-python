@@ -20,8 +20,19 @@ class CartItem(Base):
     
     # Add relationship to Product for eager loading
     product = relationship("Product", lazy="joined")
+
+    @property
+    def product_name(self) -> str:
+        return self.product.name
+
+    @property
+    def product_image(self) -> str | None:
+        return self.product.images[0] if self.product.images else None
+
+    @property
+    def stock(self) -> int:
+        return self.product.stock
     
     __table_args__ = (
         Index('ix_cart_user_product', 'user_id', 'product_id', unique=True),
     )
-

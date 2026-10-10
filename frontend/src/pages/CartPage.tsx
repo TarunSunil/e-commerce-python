@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { CartItem as CartItemType, Product } from '../types';
+import { CartItem as CartItemType } from '../types';
 import { cartService } from '../services/cartService';
-import { productService } from '../services/productService';
 import { CartItem } from '../components/CartItem';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Button } from '../components/Button';
@@ -12,7 +11,6 @@ import { authService } from '../services/authService';
 export const CartPage = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItemType[]>([]);
-  const [products, setProducts] = useState<Record<string, Product>>({});
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
 
@@ -29,18 +27,6 @@ export const CartPage = () => {
       setLoading(true);
       const items = await cartService.getCart();
       setCartItems(items);
-
-      // Load product details
-      const productMap: Record<string, Product> = {};
-      for (const item of items) {
-        try {
-          const product = await productService.getProductById(item.productId);
-          productMap[item.productId] = product;
-        } catch (error) {
-          console.error(`Failed to load product ${item.productId}:`, error);
-        }
-      }
-      setProducts(productMap);
 
       // Calculate total
       const cartTotal = await cartService.getCartTotal();
@@ -71,12 +57,13 @@ export const CartPage = () => {
       exit={{ opacity: 0 }}
       className="min-h-screen py-8"
     >
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
+      <div className="container-meridian">
+        <p className="eyebrow mb-3">Your edit</p>
+        <h1 className="display-lg mb-10 font-bold">Shopping cart</h1>
 
         {cartItems.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg mb-4">Your cart is empty</p>
+            <p className="mb-4 text-lg text-meridian-muted">Your cart is empty</p>
             <Button onClick={() => navigate('/')}>Continue Shopping</Button>
           </div>
         ) : (
@@ -86,8 +73,8 @@ export const CartPage = () => {
                 <CartItem
                   key={item.id}
                   item={item}
-                  productName={products[item.productId]?.name}
-                  productImage={products[item.productId]?.images?.[0]}
+                  productName={item.productName}
+                  productImage={item.productImage}
                   onUpdate={loadCart}
                 />
               ))}
@@ -96,11 +83,11 @@ export const CartPage = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white p-6 rounded-lg shadow-md mt-8"
+              className="surface mt-8 p-6"
             >
               <div className="flex justify-between items-center mb-4">
-                <span className="text-xl font-semibold">Total:</span>
-                <span className="text-2xl font-bold text-primary-600">
+                <span className="text-xl font-semibold">Total</span>
+                <span className="text-2xl font-bold text-meridian-brand">
                   ${total.toFixed(2)}
                 </span>
               </div>
@@ -114,5 +101,3 @@ export const CartPage = () => {
     </motion.div>
   );
 };
-
-

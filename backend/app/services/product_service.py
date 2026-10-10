@@ -14,7 +14,7 @@ def get_products(db: Session, page: int, size: int, category: Optional[str], sea
         query = query.filter(or_(Product.name.ilike(pattern), Product.description.ilike(pattern)))
 
     if category:
-        query = query.filter(Product.categories.any(category))
+        query = query.filter(Product.categories.any(category.lower()))
 
     return query.offset(page * size).limit(size).all()
 
@@ -24,6 +24,7 @@ def get_product(db: Session, product_id: str) -> Optional[Product]:
 
 
 def create_product(db: Session, product: Product) -> Product:
+    product.categories = [category.lower() for category in product.categories]
     db.add(product)
     db.commit()
     db.refresh(product)
@@ -38,6 +39,7 @@ def update_product(db: Session, product_id: str, updates: Product) -> Product:
     existing.name = updates.name
     existing.description = updates.description
     existing.categories = updates.categories
+    existing.categories = [category.lower() for category in existing.categories]
     existing.price = updates.price
     existing.images = updates.images
     existing.stock = updates.stock

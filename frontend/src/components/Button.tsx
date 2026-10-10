@@ -18,12 +18,12 @@ export const Button = ({
   disabled = false,
   className = '' 
 }: ButtonProps) => {
-  const baseClasses = 'px-4 py-2 rounded-lg font-medium transition-colors duration-200';
+  const baseClasses = 'btn-primary';
   
   const variantClasses = {
-    primary: 'bg-primary-600 text-white hover:bg-primary-700 disabled:bg-gray-400',
-    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300 disabled:bg-gray-300',
-    danger: 'bg-red-600 text-white hover:bg-red-700 disabled:bg-gray-400',
+    primary: '',
+    secondary: 'btn-secondary',
+    danger: 'bg-meridian-sale text-white',
   };
 
   return (
@@ -31,7 +31,7 @@ export const Button = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`${baseClasses} ${variantClasses[variant]} ${className}`}
+      className={`${baseClasses} ${variantClasses[variant]} disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       whileHover={{ scale: disabled ? 1 : 1.02 }}
       whileTap={{ scale: disabled ? 1 : 0.98 }}
       transition={{ duration: 0.2 }}
@@ -40,5 +40,4 @@ export const Button = ({
     </motion.button>
   );
 };
-
 

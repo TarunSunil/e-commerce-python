@@ -9,6 +9,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Button } from '../components/Button';
 import { ProductCard } from '../components/ProductCard';
 import { authService } from '../services/authService';
+import { useState as useImageState } from 'react';
 
 export const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +19,7 @@ export const ProductDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
+  const [imageFailed, setImageFailed] = useImageState(false);
 
   useEffect(() => {
     if (id) {
@@ -71,7 +73,7 @@ export const ProductDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex min-h-[70vh] items-center justify-center">
         <LoadingSpinner size="lg" />
       </div>
     );
@@ -79,8 +81,8 @@ export const ProductDetailPage = () => {
 
   if (!product) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500 text-lg">Product not found</p>
+      <div className="container-meridian py-20 text-center">
+        <p className="text-meridian-muted">Product not found</p>
       </div>
     );
   }
@@ -90,24 +92,25 @@ export const ProductDetailPage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen py-8"
+      className="page-shell py-10 lg:py-20"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <div className="container-meridian">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-20">
           <motion.div
             initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="bg-white rounded-lg shadow-md overflow-hidden"
+            className="surface overflow-hidden"
           >
-            {product.images && product.images.length > 0 ? (
+            {product.images?.[0] && !imageFailed ? (
               <img
                 src={product.images[0]}
                 alt={product.name}
-                className="w-full h-96 object-cover"
+                onError={() => setImageFailed(true)}
+                className="aspect-square w-full object-cover"
               />
             ) : (
-              <div className="w-full h-96 bg-gray-300 flex items-center justify-center">
-                <span className="text-gray-500">No Image</span>
+              <div className="grid aspect-square place-items-center bg-gradient-to-br from-meridian-deep to-meridian-brand">
+                <span className="font-display text-8xl font-bold text-meridian-highlight">{product.name.slice(0, 2).toUpperCase()}</span>
               </div>
             )}
           </motion.div>
@@ -115,20 +118,21 @@ export const ProductDetailPage = () => {
           <motion.div
             initial={{ x: 50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="space-y-4"
+            className="flex flex-col justify-center"
           >
-            <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-            <p className="text-2xl font-semibold text-primary-600">
+            <p className="eyebrow mb-5">The details</p>
+            <h1 className="display-lg font-bold">{product.name}</h1>
+            <p className="mt-6 text-3xl font-bold text-meridian-brand">
               ${product.price.toFixed(2)}
             </p>
-            <p className="text-gray-600">{product.description}</p>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-meridian-muted">{product.description}</p>
 
             {product.categories && product.categories.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {product.categories.map((category) => (
                   <span
                     key={category}
-                    className="bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-sm"
+                    className="rounded-full bg-meridian-highlight/40 px-3 py-1 text-sm font-semibold text-meridian-deep"
                   >
                     {category}
                   </span>
@@ -136,35 +140,35 @@ export const ProductDetailPage = () => {
               </div>
             )}
 
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">Quantity:</span>
-              <div className="flex items-center space-x-2">
+            <div className="mt-8 flex items-center gap-4">
+              <span className="text-sm font-semibold text-meridian-muted">Quantity</span>
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300"
+                  className="grid h-11 w-11 place-items-center rounded-full border border-meridian-ink/20 hover:border-meridian-brand"
                 >
                   -
                 </button>
-                <span className="w-12 text-center">{quantity}</span>
+                <span className="w-12 text-center font-bold">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300"
+                  className="grid h-11 w-11 place-items-center rounded-full border border-meridian-ink/20 hover:border-meridian-brand"
                 >
                   +
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
-              <span className={`text-sm ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
+            <div className="mt-5">
+              <span className={`text-sm font-bold ${product.stock > 0 ? 'text-meridian-brand' : 'text-meridian-sale'}`}>
+                {product.stock > 0 ? 'Available now' : 'Out of stock'}
               </span>
             </div>
 
             <Button
               onClick={handleAddToCart}
               disabled={product.stock === 0 || addingToCart}
-              className="w-full"
+              className="mt-8 w-full sm:w-auto"
             >
               {addingToCart ? 'Adding...' : 'Add to Cart'}
             </Button>
@@ -185,5 +189,4 @@ export const ProductDetailPage = () => {
     </motion.div>
   );
 };
-
 
