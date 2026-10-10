@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meridian — Final Preview</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#F6F3EC;--sf:#fff;--ink:#10201C;--mu:#55645F;--ln:#10201C26;--br:#0A5C4F;--bx:#073F36;--hi:#C8F169;--sa:#C8321A;--on:#fff;--d:'Bricolage Grotesque','Noto Sans','Noto Sans JP',sans-serif;--b:'Instrument Sans','Noto Sans',sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0A1412;--sf:#12211D;--ink:#EAF2EE;--mu:#9BB0A8;--ln:#EAF2EE29;--br:#5ED9B8;--bx:#0F2E28;--sa:#FF8466;--on:#06201B}}
+:root[data-theme="dark"]{--bg:#0A1412;--sf:#12211D;--ink:#EAF2EE;--mu:#9BB0A8;--ln:#EAF2EE29;--br:#5ED9B8;--bx:#0F2E28;--sa:#FF8466;--on:#06201B}
+html{scroll-behavior:smooth;scroll-padding-top:90px}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--b);overflow-x:hidden}
+a{color:inherit}button,input,select{font:inherit;color:inherit}button{cursor:pointer}h1,h2,h3{font-family:var(--d);margin:0;letter-spacing:-.04em;line-height:1}
+:focus-visible{outline:3px solid var(--br);outline-offset:2px;border-radius:6px}.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.w{padding-inline:clamp(16px,4vw,56px);max-width:1400px;margin-inline:auto}
+.ann{background:var(--bx);color:#EAF2EE;font-size:13px;text-align:center;padding:8px 16px}.ann b{color:var(--hi)}
+.hd{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--ln)}
+.hr{display:flex;align-items:center;gap:12px;padding-block:12px;flex-wrap:wrap}.logo{font:800 24px var(--d);letter-spacing:-.05em;text-decoration:none}.logo i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--br);margin-inline-start:2px}
+.sr{flex:1;min-width:180px}.sr input,.f input,.f select{width:100%;padding:11px 16px;border-radius:14px;border:1px solid var(--ln);background:var(--sf)}.sr input{border-radius:99px}
+.pill,.ic{border:1px solid var(--ln);background:var(--sf);border-radius:99px;padding:9px 14px;font-size:14px;font-weight:500}.ic{width:42px;height:42px;padding:0;position:relative}.ic em{position:absolute;top:-4px;inset-inline-end:-4px;min-width:20px;height:20px;border-radius:99px;background:var(--br);color:var(--on);font:600 11px/20px var(--b);font-style:normal}
+select.pill{padding-inline:12px}
+.hero{display:grid;grid-template-columns:2fr 1fr;gap:16px;padding-block:20px}.hb{position:relative;overflow:hidden;border-radius:32px;background:var(--bx);color:#EAF2EE;padding:clamp(26px,5vw,60px);min-height:min(62vh,520px);display:flex;flex-direction:column;justify-content:flex-end;gap:16px}
+.hb h1{font-size:clamp(38px,6vw,92px);max-width:11ch;font-weight:800;transform:translateY(calc(var(--p,0)*28px))}.hb p{max-width:42ch;color:#EAF2EEcc;margin:0}
+.hb:before{content:"";position:absolute;width:70%;aspect-ratio:1;inset-inline-end:-18%;top:-20%;border-radius:50%;background:radial-gradient(circle,var(--hi),#5ED9B866 38%,transparent 66%);transform:scale(calc(1 + var(--p,0)*.35));opacity:.85}
+.btn{display:inline-block;align-self:flex-start;padding:14px 26px;border-radius:99px;background:var(--hi);color:#10201C;font-weight:600;text-decoration:none;border:0}.btn.d{background:var(--br);color:var(--on);width:100%;text-align:center;font-size:17px;padding:16px}.btn[disabled]{opacity:.5}
+.sd{display:grid;gap:16px}.t{border-radius:28px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;min-height:190px;text-decoration:none}.t1{background:var(--hi);color:#10201C}.t2{background:var(--sf);border:1px solid var(--ln)}.t h2{font-size:28px}
+.sec{padding-block:clamp(28px,6vh,64px)}.sh{display:flex;justify-content:space-between;align-items:end;gap:12px}.sh h2{font-size:clamp(30px,4.4vw,56px)}.mu{color:var(--mu)}
+.rail{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:24px clamp(16px,4vw,56px) 40px;scrollbar-width:none}.rail::-webkit-scrollbar{display:none}
+.card{flex:0 0 clamp(200px,21vw,270px);scroll-snap-align:start;background:var(--sf);border:1px solid var(--ln);border-radius:22px;overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .3s,box-shadow .35s}
+.rail:hover .card{opacity:.6}.rail .card:hover,.rail .card:focus-within{opacity:1;transform:scale(1.05) translateY(-6px);box-shadow:0 26px 56px #0004;position:relative;z-index:2}
+.art{position:relative;aspect-ratio:1;display:grid;place-items:center;font:800 64px var(--d);color:#10201C80;background:linear-gradient(145deg,var(--a),var(--b));text-decoration:none}
+.g0{--a:#0A5C4F;--b:#C8F169}.g1{--a:#F2D9B8;--b:#E5856A}.g2{--a:#11332E;--b:#3CB89A}.g3{--a:#C8F169;--b:#F2D9B8}.g4{--a:#E5856A;--b:#F6E3C8}
+.bd{position:absolute;top:12px;inset-inline-start:12px;background:var(--sa);color:#fff;font:600 12px var(--b);padding:4px 10px;border-radius:99px}
+.inf{padding:14px 16px 16px;display:grid;gap:5px}.inf h3{font-size:18px;letter-spacing:-.02em;line-height:1.1}.inf a{text-decoration:none}.pr b{font-size:18px}.pr s{color:var(--mu);margin-inline-start:8px;font-size:14px}.rt{font-size:13px;color:var(--mu)}
+.add{margin-top:6px;border:1px solid var(--br);color:var(--br);background:none;border-radius:99px;padding:9px;font-weight:600}.add:hover{background:var(--br);color:var(--on)}
+.tr{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.tr div{padding:20px;border-radius:20px;background:var(--sf);border:1px solid var(--ln)}.tr b{display:block;font:800 18px var(--d);margin-bottom:4px;letter-spacing:-.02em}.tr span{color:var(--mu);font-size:14px}
+.pdp{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,4vw,56px);padding-block:30px}.pdp .art{border-radius:32px;font-size:160px;aspect-ratio:1}.pdp h1{font-size:clamp(34px,5vw,64px)}
+.bx{border:1px solid var(--ln);background:var(--sf);border-radius:18px;padding:14px 16px;margin-top:12px;font-size:15px}.bx b{color:var(--br)}
+.ok{color:var(--br);font-weight:600}.lo{color:var(--sa);font-weight:600}
+.hist{display:grid;gap:6px;margin-top:10px}.hist div{display:grid;grid-template-columns:28px 1fr 40px;gap:10px;align-items:center;font-size:13px}.hist i{height:8px;border-radius:9px;background:var(--ln);position:relative;overflow:hidden}.hist i:after{content:"";position:absolute;inset:0;width:var(--v);background:var(--br)}
+.rv2{padding:14px 0;border-top:1px solid var(--ln)}.vb{font-size:12px;color:var(--br);font-weight:600}
+.co{display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(20px,4vw,48px);padding-block:30px;align-items:start}.f{display:grid;gap:12px}.f label{display:grid;gap:4px;font-size:13px;color:var(--mu)}.f h2{font-size:28px;margin-top:10px}
+.po{display:flex;gap:12px;align-items:start;padding:14px;border:1px solid var(--ln);border-radius:16px;background:var(--sf)}.po[aria-disabled=true]{opacity:.55}.po input{width:auto;margin-top:4px}.po small{color:var(--mu);display:block}
+.sm{position:sticky;top:96px;background:var(--sf);border:1px solid var(--ln);border-radius:24px;padding:22px;display:grid;gap:10px}.ln2{display:flex;justify-content:space-between;gap:10px;align-items:center}.pg{height:8px;border-radius:9px;background:var(--ln);overflow:hidden}.pg i{display:block;height:100%;background:var(--br);transition:width .5s}
+.q button{width:28px;height:28px;border-radius:50%;border:1px solid var(--ln);background:var(--bg)}
+.dn{max-width:640px;margin:6vh auto;text-align:center;display:grid;gap:14px}.dn i{display:grid;place-items:center;width:84px;height:84px;margin:0 auto;border-radius:50%;background:var(--br);color:var(--on);font-size:40px;font-style:normal}
+.tl2{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:13px;color:var(--mu);text-align:start}.tl2 span{border-top:4px solid var(--ln);padding-top:6px}.tl2 span:first-child{border-color:var(--br);color:var(--ink);font-weight:600}
+footer{border-top:1px solid var(--ln);padding-block:36px;margin-top:40px;color:var(--mu);font-size:13px}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(30px);background:var(--ink);color:var(--bg);padding:12px 22px;border-radius:99px;opacity:0;transition:.35s;z-index:70;pointer-events:none}.toast.on{opacity:1;transform:translateX(-50%)}
+@media(max-width:860px){.hero,.pdp,.co{grid-template-columns:1fr}.sd{grid-template-columns:1fr 1fr}.tr{grid-template-columns:1fr 1fr}.sm{position:static}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}.hb h1,.hb:before{transform:none!important}}
+</style>
+</head>
+<body>
+<div class="ann" id="ann" role="status"></div>
+<header class="hd"><div class="w hr">
+ <a class="logo" href="#/">meridian<i></i></a>
+ <div class="sr"><label class="vh" for="q">Search</label><input id="q" type="search" list="pl" placeholder="Search products" autocomplete="off"><datalist id="pl"></datalist></div>
+ <label class="vh" for="co">Country</label><select class="pill" id="co"></select>
+ <button class="ic" id="th" aria-label="Toggle light or dark theme">◐</button>
+ <a class="ic" href="#/cart" aria-label="Cart" style="display:grid;place-items:center;text-decoration:none">▣<em id="cc">0</em></a>
+</div></header>
+<main id="app" class="w" tabindex="-1" style="min-height:70vh"></main>
+<footer><div class="w">Meridian · Final preview of the redesigned store. Product art is placeholder; real photos are self-hosted at build. Prices, delivery and payment options change with the country picker.</div></footer>
+<div class="toast" id="ts" role="status"></div>
+<script>
+(function(){
+var P=[[1,'MacBook Pro 16″ M3 Max',2499.99,0,'Computers',4.9,2310,25,'M3 Max · 36 GB · 1 TB SSD'],[2,'Sony WH-1000XM5',399.99,449.99,'Audio',4.8,9120,70,'Noise cancelling · 30 h battery'],[3,'iPhone 15 Pro Max',1199.99,0,'Phones',4.8,15400,100,'256 GB · 6.7″ · 48 MP camera'],[4,'Herman Miller Aeron',1445,0,'Office',4.7,3320,20,'Ergonomic · fully adjustable'],[5,'Dyson Supersonic',429.99,499.99,'Beauty',4.6,5210,4,'Intelligent heat control · 5 attachments'],[6,'Kindle Paperwhite Signature',189.99,219.99,'Books',4.8,22100,200,'6.8″ · 32 GB · wireless charging'],[7,'Nike Air Max 270',159.99,189.99,'Shoes',4.6,12600,120,'Max Air cushioning'],[8,'Philips Hue Starter Kit',199.99,0,'Smart Home',4.7,6400,60,'4 bulbs · 16 million colours']];
+var C={IN:{n:'India',c:'INR',l:'en-IN',r:83,d:[3,6],t:'incl. GST',pay:['upi','cod','bank','card']},US:{n:'United States',c:'USD',l:'en-US',r:1,d:[3,5],t:'Tax calculated at checkout',pay:['bank','card']},GB:{n:'United Kingdom',c:'GBP',l:'en-GB',r:.79,d:[3,6],t:'incl. VAT',pay:['bank','card']},DE:{n:'Germany',c:'EUR',l:'de-DE',r:.92,d:[4,7],t:'incl. VAT',pay:['bank','card']},AE:{n:'United Arab Emirates',c:'AED',l:'en-AE',r:3.67,d:[4,7],t:'incl. VAT',pay:['cod','bank','card']},JP:{n:'Japan',c:'JPY',l:'ja-JP',r:150,d:[5,8],t:'incl. consumption tax',pay:['bank','card']}};
+var PM={upi:['UPI','Pay our UPI ID, then enter the UTR reference. Free.'],cod:['Cash on delivery','Pay when it arrives. Free.'],bank:['Bank transfer','Details shown after you order, with a unique reference. Free.'],card:['Cards and wallets','Coming soon. Switched on when a payment provider is connected.']};
+var S={k:'IN',cart:{},last:null},$=function(i){return document.getElementById(i)},END=Date.UTC(2026,9,12,13,0);
+function cc(){return C[S.k]}
+function fmt(u){var c=cc();return new Intl.NumberFormat(c.l,{style:'currency',currency:c.c,maximumFractionDigits:(c.c==='JPY'||c.c==='INR')?0:2}).format(u*c.r)}
+function dd(a){var d=new Date();d.setDate(d.getDate()+a);return new Intl.DateTimeFormat(cc().l,{weekday:'short',day:'numeric',month:'short'}).format(d)}
+function eta(){var x=cc().d;return dd(x[0])+' – '+dd(x[1])}
+function toast(m){var t=$('ts');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(function(){t.classList.remove('on')},2200)}
+function cnt(){return Object.keys(S.cart).reduce(function(a,k){return a+S.cart[k]},0)}
+function sub(){return Object.keys(S.cart).reduce(function(a,k){return a+P[k-1][2]*S.cart[k]},0)}
+function card(p,i){var d=p[3]?Math.round((1-p[2]/p[3])*100):0;return '<article class="card"><a class="art g'+(i%5)+'" href="#/p/'+p[0]+'" aria-label="'+p[1]+'"><span aria-hidden="true">'+p[1][0]+'</span>'+(d?'<b class="bd">-'+d+'%</b>':'')+'</a><div class="inf"><h3><a href="#/p/'+p[0]+'">'+p[1]+'</a></h3><div class="pr"><b>'+fmt(p[2])+'</b>'+(p[3]?'<s>'+fmt(p[3])+'</s>':'')+'</div><div class="rt">★ '+p[5]+' ('+p[6].toLocaleString(cc().l)+')</div><button class="add" data-a="'+p[0]+'">+ Add to cart</button></div></article>'}
+function home(){var e=new Intl.DateTimeFormat(cc().l,{day:'numeric',month:'short',hour:'numeric',minute:'2-digit',timeZoneName:'short'}).format(END);
+return '<section class="hero" id="hero"><div class="hb"><h1>Everything you love. Delivered anywhere.</h1><p>Taxes shown upfront. Delivery dates, not guesses. Pay the way your country pays.</p><a class="btn" href="#trend">Start shopping</a></div><div class="sd"><a class="t t1" href="#deals"><b style="font:800 30px var(--d)">Deals</b><span>Prices drop on selected items. Ends '+e+'.</span></a><a class="t t2" href="#trend"><b style="color:var(--br)">Delivery to '+cc().n+'</b><h2>Get it by '+dd(cc().d[0])+'</h2></a></div></section>'+
+'<section class="sec" id="deals"><div class="sh"><h2>Deals</h2><span class="mu">Real deadline, set in the database</span></div></section><div class="rail" style="margin-inline:calc(-1*clamp(16px,4vw,56px))">'+P.filter(function(p){return p[3]}).map(card).join('')+'</div>'+
+'<section class="sec" id="trend"><div class="sh"><h2>Trending now</h2></div></section><div class="rail" style="margin-inline:calc(-1*clamp(16px,4vw,56px))">'+P.map(card).join('')+'</div>'+
+'<section class="sec"><div class="tr"><div><b>Total price upfront</b><span>'+cc().t+'. No surprises at the door.</span></div><div><b>Delivery by date</b><span>Estimated for '+cc().n+' from your postal code.</span></div><div><b>Real reviews</b><span>Verified-buyer labels, negatives never hidden.</span></div><div><b>Your payment method</b><span>UPI, bank transfer, cash on delivery where available.</span></div></div></section>'}
+function pdp(id){var p=P[id-1],c=cc();if(!p)return home();var d=p[3]?Math.round((1-p[2]/p[3])*100):0,low=p[7]<=5;
+var h=[68,22,6,2,2].map(function(v,i){return '<div><span>'+(5-i)+'★</span><i style="--v:'+v+'%"></i><span>'+v+'%</span></div>'}).join('');
+return '<section class="pdp"><div><div class="art g'+(id%5)+'" role="img" aria-label="'+p[1]+'">'+p[1][0]+(d?'<b class="bd">-'+d+'%</b>':'')+'</div></div><div><a href="#/" class="mu">← All products</a><h1 style="margin-top:10px">'+p[1]+'</h1><p class="mu">'+p[8]+'</p><div class="pr" style="font-size:30px;margin-top:8px"><b style="font-size:34px">'+fmt(p[2])+'</b>'+(p[3]?'<s>'+fmt(p[3])+'</s>':'')+'</div><p class="mu" style="margin:2px 0 0">'+c.t+'</p>'+
+'<div class="bx">Get it by <b>'+eta()+'</b> to '+c.n+'</div><div class="bx">'+(low?'<span class="lo">Only '+p[7]+' left in stock</span>':'<span class="ok">In stock</span>')+' · Free returns within 30 days</div>'+
+'<div style="display:flex;gap:10px;margin-top:16px"><button class="btn d" data-a="'+id+'" style="flex:1">Add to cart</button></div>'+
+'<h3 style="font-size:22px;margin-top:34px">Reviews</h3><p style="margin:6px 0 0"><b style="font:800 40px var(--d)">'+p[5]+'</b> <span class="mu">from '+p[6].toLocaleString(c.l)+' verified and unverified ratings</span></p><div class="hist">'+h+'</div>'+
+'<div class="rv2"><span class="vb">Verified buyer</span><p style="margin:4px 0 0">Arrived earlier than the date shown. Exactly as described.</p></div><div class="rv2"><span class="vb">Verified buyer</span><p style="margin:4px 0 0">Good, but the box was bigger than expected. Returns were easy.</p></div></div></section>'+
+'<section class="sec"><div class="sh"><h2>You might also like</h2></div></section><div class="rail" style="margin-inline:calc(-1*clamp(16px,4vw,56px))">'+P.filter(function(x){return x[0]!==id}).slice(0,5).map(card).join('')+'</div>'}
+function cart(){var ids=Object.keys(S.cart);if(!ids.length)return '<div class="dn"><h2 style="font-size:40px">Your cart is empty.</h2><p class="mu">Browse today\'s picks to get started.</p><a class="btn" href="#/" style="align-self:center">Continue shopping</a></div>';
+var s=sub(),th=75,ship=s>=th?0:6,tot=s+ship,left=Math.max(0,th-s),opts=cc().pay.map(function(k,i){var off=k==='card';return '<label class="po" aria-disabled="'+off+'"><input type="radio" name="pm" value="'+k+'" '+(i===0&&!off?'checked':'')+(off?' disabled':'')+'><span><b>'+PM[k][0]+'</b><small>'+PM[k][1]+'</small></span></label>'}).join('');
+return '<section class="co"><form class="f" id="ck"><h1 style="font-size:clamp(32px,4vw,52px)">Checkout</h1><p class="mu" style="margin:0">No account needed. You can create one after you order.</p>'+
+'<label>Email<input type="email" name="email" autocomplete="email" required></label><label>Full name<input name="name" autocomplete="name" required></label><label>Address<input name="a" autocomplete="shipping address-line1" required></label>'+
+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><label>City<input name="city" autocomplete="shipping address-level2" required></label><label>Postal code<input name="zip" autocomplete="shipping postal-code" required></label></div>'+
+(cc().pay.indexOf('cod')>-1?'<label>Phone (for delivery)<input type="tel" name="ph" autocomplete="tel" required></label>':'')+
+'<h2>Payment</h2><div class="f" role="radiogroup" aria-label="Payment method">'+opts+'</div><button class="btn d" style="margin-top:8px">Place order · '+fmt(tot)+'</button></form>'+
+'<aside class="sm" aria-label="Order summary"><h2 style="font-size:24px">Summary</h2>'+ids.map(function(k){var p=P[k-1];return '<div class="ln2"><span>'+p[1]+'</span><span class="q"><button data-m="'+k+'" aria-label="Less">−</button> '+S.cart[k]+' <button data-p="'+k+'" aria-label="More">+</button></span><b>'+fmt(p[2]*S.cart[k])+'</b></div>'}).join('')+
+'<div class="pg" aria-hidden="true"><i style="width:'+Math.min(100,s/th*100)+'%"></i></div><small class="mu">'+(left?'Add '+fmt(left)+' more for free delivery':'You\'ve unlocked free delivery')+'</small>'+
+'<div class="ln2"><span>Subtotal</span><span>'+fmt(s)+'</span></div><div class="ln2"><span>Delivery · '+eta()+'</span><span>'+(ship?fmt(ship):'Free')+'</span></div><div class="ln2"><b>Total</b><b style="font-size:22px">'+fmt(tot)+'</b></div><small class="mu">'+cc().t+'</small></aside></section>'}
+function done(){var o=S.last;if(!o)return home();var pm=PM[o.pm][0],ins={upi:'Pay '+fmt(o.t)+' to yourstore@upi, then reply to the email with your UTR. We confirm within 2 hours.',cod:'Keep '+fmt(o.t)+' ready. Pay when it arrives.',bank:'Bank details and your unique reference are in your email. Orders unpaid after 48 hours are released.'}[o.pm];
+return '<div class="dn"><i>✓</i><h1 style="font-size:clamp(34px,5vw,60px)">Order placed.</h1><p>We\'ve emailed your receipt to <b>'+o.e+'</b>. Arriving by <b>'+eta()+'</b>.</p><div class="bx" style="text-align:start"><b>'+pm+'</b><br>'+ins+'</div><p class="mu">Order '+o.id+'</p><div class="tl2"><span>Placed</span><span>Payment</span><span>Packed</span><span>Delivered</span></div><a class="btn" href="#/" style="align-self:center">Keep shopping</a></div>'}
+function route(){var h=location.hash.slice(1)||'/',m=h.match(/^\/p\/(\d+)/),an=(h==='trend'||h==='deals');
+ if(an&&$('hero')){var t=$(h);if(t)t.scrollIntoView({behavior:'smooth'});chrome();return}
+ var v=m?pdp(+m[1]):h==='/cart'?cart():h==='/done'?done():home();$('app').innerHTML=v;$('app').focus({preventScroll:true});
+ if(an){var t2=$(h);if(t2)t2.scrollIntoView()}else scrollTo(0,0);chrome()}
+function chrome(){$('cc').textContent=cnt();var th=75;$('ann').innerHTML='<b>Free delivery over '+fmt(th)+' to '+cc().n+'</b> · arrives '+eta()}
+$('pl').innerHTML=P.map(function(p){return '<option value="'+p[1]+'">'}).join('');$('co').innerHTML=Object.keys(C).map(function(k){return '<option value="'+k+'">'+C[k].n+' · '+C[k].c+'</option>'}).join('');$('co').value=S.k;
+$('co').onchange=function(e){S.k=e.target.value;route()};
+$('q').onchange=function(e){var p=P.filter(function(x){return x[1]===e.target.value})[0];if(p)location.hash='/p/'+p[0]};
+$('th').onclick=function(){var r=document.documentElement,d=getComputedStyle(r).getPropertyValue('--bg').trim()==='#0A1412';r.dataset.theme=d?'light':'dark'};
+document.addEventListener('click',function(e){var a=e.target.closest('[data-a],[data-p],[data-m]');if(!a)return;
+ if(a.dataset.a){S.cart[a.dataset.a]=(S.cart[a.dataset.a]||0)+1;chrome();toast('Added to cart')}
+ if(a.dataset.p){S.cart[a.dataset.p]++;route()}if(a.dataset.m){S.cart[a.dataset.m]--;if(!S.cart[a.dataset.m])delete S.cart[a.dataset.m];route()}});
+document.addEventListener('submit',function(e){if(e.target.id!=='ck')return;e.preventDefault();var f=e.target,pm=f.querySelector('input[name=pm]:checked').value,s=sub();S.last={id:'MR-'+Math.random().toString(36).slice(2,8).toUpperCase(),e:f.email.value,pm:pm,t:s+(s>=75?0:6)};S.cart={};location.hash='/done'});
+addEventListener('hashchange',route);
+addEventListener('scroll',function(){var h=document.getElementById('hero');if(h)h.style.setProperty('--p',Math.min(1,scrollY/700).toFixed(3))},{passive:true});
+route();
+})();
+</script>
+</body>
+</html>

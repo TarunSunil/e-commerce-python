@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
     container_name: ecommerce-backend
     environment:
-      DATABASE_URL: postgresql+psycopg2://ecom_user:ecom_pass@postgres:5432/ecommerce
+            DATABASE_URL: postgresql+psycopg2://ecom_user:ecompass7@postgres:5432/ecommerce
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
       JWT_ALGORITHM: HS256
       JWT_EXP_MINUTES: 1440
