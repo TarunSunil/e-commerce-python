@@ -51,7 +51,7 @@ jobs:
 
       - name: Run tests
         working-directory: ./backend
-        run: pytest -q || test $? -eq 5
+        run: python -m pytest -q
 
   frontend-test:
     runs-on: ubuntu-latest
